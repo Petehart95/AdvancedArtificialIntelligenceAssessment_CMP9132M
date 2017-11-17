@@ -1,3 +1,5 @@
+clear;
+
 %https://www.eecs.qmul.ac.uk/~norman/BBNs/Bayes_rule.htm
 
 prompt = 'What is P(d)? ';
