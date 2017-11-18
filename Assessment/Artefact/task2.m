@@ -30,4 +30,63 @@ T = [0.5,0.5;
     
 s0 = [0.5,0.5]';
 
-st = Omama * T' * s0;
+UIcontinue = 1;
+
+
+ctr =  1;
+while (UIcontinue == 1)
+    clc;
+    UI = ['What is the value of s', num2str(ctr), ' ? (mama, papa, pee, poo)'];
+    disp(UI);
+    prompt = ' ';
+    i = input(prompt,'s');
+    
+    if (i == 'papa')
+        st = Opapa * T' * s0;
+    elseif (i == 'mama')
+        st = Omama * T' * s0;
+    elseif (i == 'pee')
+        st = Opee * T' * s0;
+    else
+        st = Opoo * T' * s0;
+    end
+    
+    totalProb = st(1) + st(2);
+    
+    UI = ['s', num2str(ctr), ' = ', num2str(totalProb), ' '];
+    disp(UI);
+    disp('Would you like to continue? (Y/N)');
+    prompt = ' ';
+    
+    i = input(prompt,'s');
+    
+    if i == 'N'
+        UIcontinue = 0;
+    end
+    
+    ctr = ctr + 1;
+    s0 = st;
+end
+
+
+% n = [];
+% 
+% prompt = 'What is the size of the input sequence? ';
+% n = input(prompt);
+
+
+
+% for ctr=1:4
+%     clc;
+%     UI = ['What is the value of s', ctr, ' ? (mama, papa, pee, poo)'];
+%     disp(UI);
+%     prompt = ' ';
+%     in = input(prompt,'s');
+%     
+%     n = n + in;
+%     if ctr < 4
+%         n = n + ' ';
+%     end
+% end
+
+
