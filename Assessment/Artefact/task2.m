@@ -1,92 +1,89 @@
+% Task 2 Script - HMM | Advanced Artificial Intelligence | CMP9132M
+% 12421031 | Peter Hart
+
+%Clear workspace variables
 clear;
 
-% warm = 1, cold = 2, hot = 3, freezing = 4
-
-%T = {0.75,0.25;
-%     0.25,0.75};
-
-%O = {0.45,0.45,0.05,0.05;
-%     0.05,0.05,0.45,0.45};
+% ON/OFF Transition Probabilities
+T = [0.75,0.25; 
+     0.25,0.75];  
  
-%Owarm = {0.45,0.0;0.0,0.05};
-%Ocold = {0.45,0.0;0.0,0.05};
-%Ohot = {0.05,0.0;0.0,0.45};
-%Ofreezing = {0.05,0.0;0.0,0.45};
-
-
-%st = Ot T' st-1
-
-Omama = [0.4,0.0;
-         0.0,0.1];
-Opapa = [0.4,0.0;
-         0.0,0.1];
-Opee = [0.1,0.0;
-        0.0,0.4];
-Opoo = [0.1,0.0;
-        0.0,0.4];
-    
-T = [0.5,0.5;
-     0.8,0.2];  
-    
-s0 = [0.5,0.5]';
-
-UIcontinue = 1;
-
-
+% Emission Probabilities
+% (Warm, Cold, Hot, Freezing)
+Owarm = [0.45,0.0;
+         0.0,0.05]; 
+Ocold = [0.45,0.0;
+         0.0,0.05];
+Ohot = [0.05,0.0;
+        0.0,0.45];
+Ofreezing = [0.05,0.0;
+             0.0,0.45];
+         
+%Starting state probability.
+s0 = [0.5,0.5]'; 
+%Initialise current state.
+st = s0; 
+%Variable used for controlling recursive loop.
+UIcontinue = 1; 
+%Counter variable that will be used for tracking current state value.
 ctr =  1;
+
+%While the user wants to input more values...
 while (UIcontinue == 1)
-    clc;
-    UI = ['What is the value of s', num2str(ctr), ' ? (mama, papa, pee, poo)'];
-    disp(UI);
+    %Clear command window.
+    clc; 
+    %Display probability values of previous state.
+    UI = ['s',num2str(ctr-1), ' = ']; 
+    disp(UI); 
+    disp(st);
+    %Gather user input for current state selection
+    UI = ['What is the value of s', num2str(ctr), ' ? (warm, cold, hot, freezing)'];
+    disp(UI); 
     prompt = ' ';
-    i = input(prompt,'s');
+    %Store user input in variable i. Convert string to lowercase.
+    i = lower(input(prompt,'s'));
     
-    if (i == 'papa')
-        st = Opapa * T' * s0;
-    elseif (i == 'mama')
-        st = Omama * T' * s0;
-    elseif (i == 'pee')
-        st = Opee * T' * s0;
+
+    % Compute current state probabilities depending on which emission
+    % probability is selected by the user.
+    % st = Ot * T' * st-1
+    if (strcmp(i,"warm") == 1)
+        st = Owarm * T' * s0;
+    elseif (strcmp(i,"cold") == 1)
+        st = Ocold * T' * s0;
+    elseif (strcmp(i,"hot") == 1)
+        st = Ohot * T' * s0;
+    elseif (strcmp(i,"freezing") == 1)
+        st = Ofreezing * T' * s0;
     else
-        st = Opoo * T' * s0;
+        %If user has made a mistake, ask for more input.
+        disp("Invalid input.");
+        continue;
     end
     
+    %Computation successful. Display the computed probability results.
+    disp(st);
     totalProb = st(1) + st(2);
-    
-    UI = ['s', num2str(ctr), ' = ', num2str(totalProb), ' '];
+    UI = ['s', num2str(ctr), ' Total Probability = ', num2str(totalProb), ' '];
     disp(UI);
+    
+    %Ask user if they wish to exit the program.
     disp('Would you like to continue? (Y/N)');
     prompt = ' ';
+    i = lower(input(prompt,'s'));
     
-    i = input(prompt,'s');
-    
-    if i == 'N'
+    if strcmp(i,'y') == 1
+        UIcontinue = 1;
+        %Increase current state counter.
+        ctr = ctr + 1;
+        %Store the calculated probabilites of the current state in s0(st-1)
+        %to ensure first-order Markov assumption.
+        s0 = st;
+    elseif strcmp(i,'n') == 1
         UIcontinue = 0;
+    else
+        UIcontinue = 0;
+        disp("Invalid input. Exiting...");
     end
-    
-    ctr = ctr + 1;
-    s0 = st;
 end
-
-
-% n = [];
-% 
-% prompt = 'What is the size of the input sequence? ';
-% n = input(prompt);
-
-
-
-% for ctr=1:4
-%     clc;
-%     UI = ['What is the value of s', ctr, ' ? (mama, papa, pee, poo)'];
-%     disp(UI);
-%     prompt = ' ';
-%     in = input(prompt,'s');
-%     
-%     n = n + in;
-%     if ctr < 4
-%         n = n + ' ';
-%     end
-% end
-
-
+%end of script
