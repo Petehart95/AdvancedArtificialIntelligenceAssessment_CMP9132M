@@ -1,4 +1,4 @@
-% Task 2 Script - HMM | Advanced Artificial Intelligence | CMP9132M
+% Task 2 Script | Advanced Artificial Intelligence | CMP9132M
 % 12421031 | Peter Hart
 
 %Clear workspace variables

@@ -1,15 +1,24 @@
+% Task 1a Script | Advanced Artificial Intelligence | CMP9132M
+% 12421031 | Peter Hart
+
+%Clear workspace variables
 clear;
 
-%https://www.eecs.qmul.ac.uk/~norman/BBNs/Bayes_rule.htm
-
+% Gather user input for the following three probabilities
+% P(d) 
 prompt = 'What is P(d)? ';
 pd = input(prompt);
 
+% P(t|d) 
 prompt = 'What is P(t|d)? ';
 ptd = input(prompt);
 
+% P(¬t|¬d)
 prompt = 'What is P(¬t|¬d)? ';
 p_t_d = input(prompt);
+
+
+%Bayes Rule = P(A|B) = P(B|A)P(A)/P(B)
 
 %P(¬d)
 p_d = 1 - pd;
