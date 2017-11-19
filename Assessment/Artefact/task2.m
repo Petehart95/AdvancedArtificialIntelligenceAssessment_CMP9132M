@@ -70,6 +70,7 @@ while (UIcontinue == 1)
     %Ask user if they wish to exit the program.
     disp('Would you like to continue? (Y/N)');
     prompt = ' ';
+    %Store user input in variable i. Convert string to lowercase.
     i = lower(input(prompt,'s'));
     
     if strcmp(i,'y') == 1
