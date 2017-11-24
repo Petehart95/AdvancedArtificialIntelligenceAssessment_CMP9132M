@@ -4,7 +4,8 @@
 %Clear workspace variables
 clear;
 
-% ON/OFF Transition Probabilities
+% Transition Probabilities
+% (ON, OFF)
 T = [0.75,0.25; 
      0.25,0.75];  
  
@@ -47,17 +48,17 @@ while (UIcontinue == 1)
     % Compute current state probabilities depending on which emission
     % probability is selected by the user.
     % st = Ot * T' * st-1
-    if (strcmp(i,"warm") == 1)
+    if (strcmp(i,'warm') == 1)
         st = Owarm * T' * s0;
-    elseif (strcmp(i,"cold") == 1)
+    elseif (strcmp(i,'cold') == 1)
         st = Ocold * T' * s0;
-    elseif (strcmp(i,"hot") == 1)
+    elseif (strcmp(i,'hot') == 1)
         st = Ohot * T' * s0;
-    elseif (strcmp(i,"freezing") == 1)
+    elseif (strcmp(i,'freezing') == 1)
         st = Ofreezing * T' * s0;
     else
         %If user has made a mistake, ask for more input.
-        disp("Invalid input.");
+        disp('Invalid input.');
         continue;
     end
     
@@ -84,7 +85,8 @@ while (UIcontinue == 1)
         UIcontinue = 0;
     else
         UIcontinue = 0;
-        disp("Invalid input. Exiting...");
+        disp('Invalid input. Exiting...');
     end
 end
+
 %end of script

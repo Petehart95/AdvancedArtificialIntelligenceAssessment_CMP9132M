@@ -31,3 +31,5 @@ pt = (ptd*pd)+(p_td*p_d);
 
 %P(d|t)
 pdt = (ptd*pd) / pt;
+
+%end of script
