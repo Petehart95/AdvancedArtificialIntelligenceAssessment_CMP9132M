@@ -21,7 +21,8 @@ Ofreezing = [0.05,0.0;
              0.0,0.45];
          
 %Starting state probability.
-s0 = [0.5,0.5]'; 
+s0 = [0.5;
+      0.5]; 
 %Initialise current state.
 st = s0; 
 %Variable used for controlling recursive loop.
