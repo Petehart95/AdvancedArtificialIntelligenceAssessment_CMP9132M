@@ -13,27 +13,7 @@ clear;clc;
 %   /       \
 %P(J)        P(M)
 
-% Conditional Probability Table (CPT)
-% Pb = 0.001; P_b = 0.999; %P(B)
-% Pe = 0.002; P_e = 0.998; %P(E)
-% Pabe = 0.950; P_abe = 0.050; %P(A)
-% Pab_e = 0.940; P_ab_e = 0.060;
-% Pa_be = 0.290; P_a_be = 0.710;
-% Pa_b_e = 0.001; P_a_b_e = 0.999;
-% Pja = 0.900; P_ja = 0.100; %P(J)
-% Pj_a = 0.050; P_j_a = 0.950;
-% Pma = 0.700; P_ma = 0.300; %P(M)
-% Pm_a = 0.010; P_m_a = 0.990;
 
-% Inference by Enumeration
-%P(b|j,m)
-% x1 = Pb*(Pe*(Pabe*Pja*Pma+P_abe*Pj_a*Pm_a)+(P_e*(Pab_e*Pja*Pma+P_ab_e*Pj_a*Pm_a)));
-% %P(¬b|j,m)
-% x2 = P_b*(Pe*(Pa_be*Pja*Pma+P_a_be*Pj_a*Pm_a)+(P_e*(Pa_b_e*Pja*Pma+P_a_b_e*Pj_a*Pm_a)));
-% 
-% % Normalisation
-% Pbjm = 1/(x1+x2)*x1;
-% P_bjm = 1/(x1+x2)*x2;
 
 % Parameter Learning (developing new CPT)
 
@@ -54,127 +34,74 @@ bn = [1, 1, 1, 1, 0;
 totalRow = size(bn,1);
 totalCol = size(bn,2);
   
-%Perform count operations to conduct Maximum Likelihood Estimation(MLE)
 %Store column values for each variable to simplify referencing
-colA = 1; colM = 2; colJ = 3; colB = 4; colE = 5;
+colA = 1; colM = 2; colJ = 3; colB = 4; colE = 5;  
 
-%Counter variables for counting query variable values
-ctrABE = 0; ctrAB_E = 0; ctrA_BE = 0; ctrA_B_E = 0;
-ctrBE = 0; ctrB_E = 0; ctr_BE = 0; ctr_B_E = 0;
-ctrMA = 0; ctrM_A = 0; 
-ctrJA = 0; ctrJ_A = 0; 
+% Conditional Probability Table (CPT)
+Pb = varOneMLE(bn,colB,1); P_b = varOneMLE(bn,colB,0); %P(B)
+Pe = varOneMLE(bn,colE,1); P_e = varOneMLE(bn,colE,0); %P(E)
 
-%Find a way to detect number of samples/variables before iniating function
+Pabe = varThreeMLE(bn,colA,colB,colE,1,1,1); P_abe = varThreeMLE(bn,colA,colB,colE,0,1,1); %P(A)
+Pab_e = varThreeMLE(bn,colA,colB,colE,1,1,0); P_ab_e = varThreeMLE(bn,colA,colB,colE,0,1,0);
+Pa_be = varThreeMLE(bn,colA,colB,colE,1,0,1); P_a_be = varThreeMLE(bn,colA,colB,colE,0,0,1);
+Pa_b_e = varThreeMLE(bn,colA,colB,colE,1,0,0); P_a_b_e = varThreeMLE(bn,colA,colB,colE,0,0,0);
 
-%Count variables for counting total entries in each individual varible
-ctrB = sum(bn(:,colB)); ctrE = sum(bn(:,colE)); ctrA = sum(bn(:,colA));
-ctrJ = sum(bn(:,colJ)); ctrM = sum(bn(:,colM));
+Pja = varTwoMLE(bn,colJ,colA,1,1); P_ja = varTwoMLE(bn,colJ,colA,0,1); %P(J)
+Pj_a = varTwoMLE(bn,colJ,colA,1,0); P_j_a = varTwoMLE(bn,colJ,colA,0,0);
 
-ctrB = sum(bn(:,colB)); ctrE = sum(bn(:,colE)); ctr_A = totalRow - ctrA;
-ctrJ = sum(bn(:,colJ)); ctrM = sum(bn(:,colM));
+Pma = varTwoMLE(bn,colM,colA,1,1); P_ma = varTwoMLE(bn,colM,colA,0,1); %P(M)
+Pm_a = varTwoMLE(bn,colM,colA,1,0); P_m_a = varTwoMLE(bn,colM,colA,0,0);
 
-%Iterate through entire input array
-for i=1:totalRow
-   %P(a|b,e)
-   if bn(i,colA) == 1 && bn(i,colB) == 1 && bn(i,colE) == 1
-      ctrABE = ctrABE + 1;
-   end
-    
-   %P(a|b,¬e)
-   if bn(i,colA) == 1 && bn(i,colB) == 1 && bn(i,colE) == 0
-       ctrAB_E = ctrAB_E + 1;
-   end
-   
-   %P(a|¬b,e)
-   if bn(i,colA) == 1 && bn(i,colB) == 0 && bn(i,colE) == 1
-       ctrA_BE = ctrA_BE + 1;
-   end
-   
-   %P(a|¬b,¬e)
-   if bn(i,colA) == 1 && bn(i,colB) == 0 && bn(i,colE) == 0
-       ctrA_B_E = ctrA_B_E + 1;
-   end
-   
-   %P(m|a)
-   if bn(i,colM) == 1 && bn(i,colA) == 1
-      ctrMA = ctrMA + 1;
-   end
-   
-   %P(m|¬a)
-   if bn(i,colM) == 1 && bn(i,colA) == 0
-       ctrM_A = ctrM_A + 1;
-   end
-   
-   %P(j|a)
-   if bn(i,colJ) == 1 && bn(i,colA) == 1
-      ctrJA = ctrJA + 1;
-   end
-   
-   %P(j|¬a)
-   if bn(i,colJ) == 1 && bn(i,colA) == 0
-       ctrJ_A = ctrJ_A + 1;
-   end
-   
-   % P(b,e)
-   if bn(i,colB) == 1 && bn(i,colE) == 1
-       ctrBE = ctrBE + 1;
-   end
-   
-   % P(b,¬e)
-   if bn(i,colB) == 1 && bn(i,colE) == 0
-       ctrB_E = ctrB_E + 1;
-   end
-   
-   % P(¬b,e)
-   if bn(i,colB) == 0 && bn(i,colE) == 1
-       ctr_BE = ctr_BE + 1;
-   end
-   
-   % P(¬b,¬e)
-   if bn(i,colB) == 0 && bn(i,colE) == 0
-       ctr_B_E = ctr_B_E + 1;
-   end
-end
 
-Pb = (ctrB + 1) / (totalRow + 2); 
-Pe = (ctrE + 1) / (totalRow + 2);
-Pabe = (ctrABE + 1) / (ctrBE + 2);
-Pab_e = (ctrAB_E + 1) / (ctrB_E + 2);
-Pa_be = (ctrA_BE + 1) / (ctr_BE + 2);
-Pa_b_e = (ctrA_B_E + 1) / (ctr_B_E + 2);
-Pja = (ctrJA + 1) / (ctrA + 2); 
-Pj_a = (ctrJ_A + 1) / (ctr_A + 2); 
-Pma = (ctrMA + 1) / (ctrA + 2); 
-Pm_a = (ctrM_A + 1) / (ctr_A + 2);  
+% Inference by Enumeration
+%P(b|j,m)
+x1 = Pb*(Pe*(Pabe*Pja*Pma+P_abe*Pj_a*Pm_a)+(P_e*(Pab_e*Pja*Pma+P_ab_e*Pj_a*Pm_a)));
+%P(¬b|j,m)
+x2 = P_b*(Pe*(Pa_be*Pja*Pma+P_a_be*Pj_a*Pm_a)+(P_e*(Pa_b_e*Pja*Pma+P_a_b_e*Pj_a*Pm_a)));
 
-function x = varOneCount (X,colx,valx)
-    x = 0;
-    n = size(X,1);
-    for i=1:n
+% Normalisation
+Pbjm = 1/(x1+x2)*x1;
+P_bjm = 1/(x1+x2)*x2;
+
+function P = normalisation(
+
+function P = varOneMLE (X,colx,valx)
+    x1 = 0;
+    N = size(X,1);
+    for i=1:N
         if X(i,colx) == valx
-            x = x + 1;
+            x1 = x1 + 1;
         end
     end
+    P = (x1 + 1) / (N + 2); 
 end
 
-function x = varTwoCount (X,colx,coly,valx,valy)
-    x = 0;
-    n = size(X,1);
-    for i=1:n
+function P = varTwoMLE (X,colx,coly,valx,valy)
+    x1 = 0; x2 = 0;
+    N = size(X,1);
+    for i=1:N
         if X(i,colx) == valx && X(i,coly) == valy
-            x = x + 1;
+            x1 = x1 + 1;
+        end
+        if X(i,coly) == valy
+            x2 = x2 + 1;
         end
     end
+    P = (x1 + 1) / (x2 + 2);
 end
 
-function x = varThreeCount (X,colx,coly,colz,valx,valy,valz)
-    x = 0;
-    n = size(X,1);
-    for i=1:n
+function P = varThreeMLE (X,colx,coly,colz,valx,valy,valz)
+    x1 = 0; x2 = 0;
+    N = size(X,1);
+    for i=1:N
         if X(i,colx) == valx && X(i,coly) == valy && X(i,colz) == valz
-            x = x + 1;
+            x1 = x1 + 1;
+        end
+        if X(i,coly) == valy && X(i,colz) == valz
+            x2 = x2 + 1;
         end
     end
+    P = (x1 + 1) / (x2 + 2);
 end
 
 %end of script
