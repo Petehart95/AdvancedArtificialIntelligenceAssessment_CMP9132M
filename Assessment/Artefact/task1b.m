@@ -13,10 +13,6 @@ clear;clc;
 %   /       \
 %P(J)        P(M)
 
-
-
-% Parameter Learning (developing new CPT)
-
 % Input array:
 %     A, M, J, B, E;
 bn = [1, 1, 1, 1, 0;
@@ -30,8 +26,6 @@ bn = [1, 1, 1, 1, 0;
       0, 0, 0, 0, 1;
       1, 1, 1, 0, 1];
 
-CPT = 
-
 %Variables storing dimensions of input array
 totalRow = size(bn,1);
 totalCol = size(bn,2);
@@ -39,7 +33,7 @@ totalCol = size(bn,2);
 %Store column values for each variable to simplify referencing
 colA = 1; colM = 2; colJ = 3; colB = 4; colE = 5;  
 
-% Conditional Probability Table (CPT)
+% Conditional Probability Tables (CPT)
 Pb = varOneMLE(bn,colB,1); P_b = varOneMLE(bn,colB,0); %P(B)
 
 Pe = varOneMLE(bn,colE,1); P_e = varOneMLE(bn,colE,0); %P(E)
@@ -64,21 +58,34 @@ X2 = P_b*(Pe*(Pa_be*Pja*Pma+P_a_be*Pj_a*Pm_a)+(P_e*(Pa_b_e*Pja*Pma+P_a_b_e*Pj_a*
 % Normalisation
 Pbjm = 1/(X1+X2)*X1;
 P_bjm = 1/(X1+X2)*X2;
-    
+
+% Parameter Learning Functions: Maximum Likelihood Estimation (MLE)
+% One Variable MLE Function
 function P = varOneMLE (X,colx,valx)
+    %Variable for counting number of instances a value appears (e.g. T/F)
     x1 = 0;
+    %Calculate number of observations which will be considered
     N = size(X,1);
+    %For all of the observations in the input dataset
     for i=1:N
+        %If this value is equal to value that is being counted
         if X(i,colx) == valx
+            %Add one to the counter variable
             x1 = x1 + 1;
         end
     end
+    %Once all instances have been counted, conduct MLE calculation
+    %P(X = x) = count(x) + 1 / count(X) + |X|
+    %(where |X| = domain size of variable X. Domain size = number of possible values for this variable.)
     P = (x1 + 1) / (N + 2); 
 end
 
+%Two Variable MLE Function
 function P = varTwoMLE (X,colx,coly,valx,valy)
+    %Variables for counting number of instances a value appears (e.g. T/F)
     x1 = 0; x2 = 0;
     N = size(X,1);
+    %For all of the observations in the input dataset
     for i=1:N
         if X(i,colx) == valx && X(i,coly) == valy
             x1 = x1 + 1;
@@ -90,6 +97,7 @@ function P = varTwoMLE (X,colx,coly,valx,valy)
     P = (x1 + 1) / (x2 + 2);
 end
 
+%Three Variable MLE Function
 function P = varThreeMLE (X,colx,coly,colz,valx,valy,valz)
     x1 = 0; x2 = 0;
     N = size(X,1);
