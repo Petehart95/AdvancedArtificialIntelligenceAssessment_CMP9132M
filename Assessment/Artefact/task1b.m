@@ -14,17 +14,17 @@ clear;clc;
 %P(J)        P(M)
 
 % Input array:
-%        A,    M,    J,    B,    E;
-input = [true, true, true, true, false;
+%        A,     M,     J,     B,     E;
+input = [true,  true,  true,  true,  false;
          false, false, false, false, false;
-         true, true, false, false, true;
-         false, false, true, false, false;
+         true,  true,  false, false, true;
+         false, false, true,  false, false;
          false, false, false, false, false;
          false, false, false, false, false;
-         true, true, true, true, false;
-         true, true, true, true, false;
+         true,  true,  true,  true,  false;
+         true,  true,  true,  true,  false;
          false, false, false, false, true;
-         true, true, true, false, true];
+         true,  true,  true,  false, true];
 
 Xdomain = unique(input);  
 
