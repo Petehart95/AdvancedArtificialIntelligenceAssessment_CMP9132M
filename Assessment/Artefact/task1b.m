@@ -41,10 +41,7 @@ totalCol = size(input,2);
 colA = 1; colM = 2; colJ = 3; colB = 4; colE = 5;  
 
 % Conditional Probability Tables (CPT)
-
-keySetB = {'
-valueSetB = [varOneMLE(input,colB,1), varOneMLE(input,colB)]; %P(B)
-
+Pb = varOneMLE(input,colB,1); P_b = varOneMLE(input,colB,0); %P(B)
 Pe = varOneMLE(input,colE,1); P_e = varOneMLE(input,colE,0); %P(E)
 
 Pabe = varThreeMLE(input,colA,colB,colE,1,1,1); P_abe = varThreeMLE(input,colA,colB,colE,0,1,1); %P(A)
