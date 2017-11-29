@@ -25,6 +25,11 @@ input = [true,  true,  true,  true,  false;
          true,  true,  true,  true,  false;
          false, false, false, false, true;
          true,  true,  true,  false, true];
+     
+keySet =   {'Jan', 'Feb', 'Mar', 'Apr'};
+valueSet = [327.2, 368.2, 197.6, 178.4];
+mapObj = containers.Map(keySet,valueSet);
+
 
 Xdomain = unique(input);  
 
@@ -36,7 +41,9 @@ totalCol = size(input,2);
 colA = 1; colM = 2; colJ = 3; colB = 4; colE = 5;  
 
 % Conditional Probability Tables (CPT)
-Pb = varOneMLE(input,colB,1); P_b = varOneMLE(input,colB,0); %P(B)
+
+keySetB = {'
+valueSetB = [varOneMLE(input,colB,1), varOneMLE(input,colB)]; %P(B)
 
 Pe = varOneMLE(input,colE,1); P_e = varOneMLE(input,colE,0); %P(E)
 
