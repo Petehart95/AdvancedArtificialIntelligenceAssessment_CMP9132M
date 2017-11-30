@@ -7,10 +7,11 @@ def sampleVariable(vari, value):
  
   value1 = None
   value2 = None
+  
+  #print (value)
   for i in range(len(vari)):
     value1 = vari["+"+value]
     value2 = vari["-"+value]
-
   if randnum<value1: 
     sampledValue = "+"+value
   else:
@@ -69,10 +70,9 @@ for i in range(int(N)):
   sampledValueJ = sampleVariable(varJ, conditionalJ)
   sampledValueJ_split = sampledValueJ.split("|")
   event.append(sampledValueJ_split[0])
-
+  print(sampledValueA_split[0])
   conditionalM = "m|"+sampledValueA_split[0]
   sampledValueM = sampleVariable(varM, conditionalM)
   sampledValueM_split = sampledValueM.split("|")
   event.append(sampledValueM_split[0])
 
-  print (event)

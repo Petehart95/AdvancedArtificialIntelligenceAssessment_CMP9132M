@@ -25,13 +25,6 @@ input = [true,  true,  true,  true,  false;
          true,  true,  true,  true,  false;
          false, false, false, false, true;
          true,  true,  true,  false, true];
-     
-keySet =   {'Jan', 'Feb', 'Mar', 'Apr'};
-valueSet = [327.2, 368.2, 197.6, 178.4];
-mapObj = containers.Map(keySet,valueSet);
-
-
-Xdomain = unique(input);  
 
 %Variables storing dimensions of input array
 totalRow = size(input,1);
@@ -55,6 +48,26 @@ Pj_a = varTwoMLE(input,colJ,colA,1,0); P_j_a = varTwoMLE(input,colJ,colA,0,0);
 Pma = varTwoMLE(input,colM,colA,1,1); P_ma = varTwoMLE(input,colM,colA,0,1); %P(M)
 Pm_a = varTwoMLE(input,colM,colA,1,0); P_m_a = varTwoMLE(input,colM,colA,0,0);
 
+keySetB = {'+b','-b'};
+valueSetB = [Pb,P_b];
+varB = containers.Map(keySetB,valueSetB);
+
+keySetE = {'+e','-e'};
+valueSetE = [Pe,P_e];
+varE = containers.Map(keySetE,valueSetE);
+
+keySetA = {'+a|+b+e', '+a|+b-e','+a|-b+e','+a|-b-e','-a|+b+e','-a|+b-e','-a|-b+e','-a|-b-e'};
+valueSetA = [Pabe, Pab_e, Pa_be, Pa_b_e, P_abe, P_ab_e, P_a_be, P_a_b_e];
+varA = containers.Map(keySetA,valueSetA);
+
+keySetJ = {'+j|+a','+j|-a','-j|+a','-j|-a'};
+valueSetJ = [Pja,Pj_a,P_ja,P_j_a];
+varJ = containers.Map(keySetJ,valueSetJ);
+
+keySetM = {'+m|+a','+m|-a','-m|+a','-m|-a'};
+valueSetM = [Pma, Pm_a, P_ma, P_m_a];
+varM = containers.Map(keySetM,valueSetM);
+
 % Inference by Enumeration
 %P(b|j,m)
 X1 = Pb*(Pe*(Pabe*Pja*Pma+P_abe*Pj_a*Pm_a)+(P_e*(Pab_e*Pja*Pma+P_ab_e*Pj_a*Pm_a)));
@@ -66,46 +79,47 @@ Pbjm = 1/(X1+X2)*X1;
 P_bjm = 1/(X1+X2)*X2;
 
 
-N = 1000;
+N = 10000;
 for i=1:N
     event = [];
-    sampledValueB = sampleVariable(varB, "b");
-    event.append(sampledValueB);
+    sampledValueB = sampleVariable(varB, 'b');
+    event = [event, sampledValueB];
 
-    sampledValueE = sampleVariable(varE, "e");
-    event.append(sampledValueE);
+    sampledValueE = sampleVariable(varE, 'e');
+    event = [event, sampledValueE];
 
-    conditionalA = "a|"+sampledValueB+" "+sampledValueE;
+    conditionalA = strcat('a|',sampledValueB,sampledValueE);
     sampledValueA = sampleVariable(varA, conditionalA);
-    sampledValueA_split = sampledValueA.split("|");
-    event.append(sampledValueA_split(0));
+    sampledValueA_split = extractBefore(sampledValueA,'|');
+    event = [event, sampledValueA_split];
 
-    conditionalJ = "j|"+sampledValueA_split(0);
+    conditionalJ = strcat('j|',sampledValueA_split);
     sampledValueJ = sampleVariable(varJ, conditionalJ);
-    sampledValueJ_split = sampledValueJ.split("|");
-    event.append(sampledValueJ_split(0));
+    sampledValueJ_split = extractBefore(sampledValueJ,'|');
+    event = [event, sampledValueJ_split];
 
-    conditionalM = "m|"+sampledValueA_split(0);
+    conditionalM = strcat('m|',sampledValueA_split);
     sampledValueM = sampleVariable(varM, conditionalM);
-    sampledValueM_split = sampledValueM.split("|");
-    event.append(sampledValueM_split(0));
+    sampledValueM_split = extractBefore(sampledValueM,'|');
+    event = [event,sampledValueM_split];
+    disp(event);
 end
 
 function sampledValue = sampleVariable(vari, value)
-    sampledValue = None;
-    randnum = random.random();
-    value1 = None;
-    value2 = None;
-    for i=1:vari
-        value1 = vari("+"+value);
-        value2 = vari("-"+value);
-
-        if randnum<value1
-            sampledValue = "+"+value;
-        else
-            sampledValue = "-"+value;
-        end
+    sampledValue = '';
+    randnum = rand();
+    value1 = '';
+    value2 = '';
+   % for i=1:size(vari,1)
+        
+        value1 = vari(strcat('+',value)); %here
+        value2 = vari(strcat('-',value));
+    if randnum<value1
+        sampledValue = strcat('+',value);
+    else
+        sampledValue = strcat('-',value);
     end
+    %end
 end
 
 % Parameter Learning Functions: Maximum Likelihood Estimation (MLE)
