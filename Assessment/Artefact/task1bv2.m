@@ -74,52 +74,58 @@ X1 = Pb*(Pe*(Pabe*Pja*Pma+P_abe*Pj_a*Pm_a)+(P_e*(Pab_e*Pja*Pma+P_ab_e*Pj_a*Pm_a)
 %P(¬b|j,m)
 X2 = P_b*(Pe*(Pa_be*Pja*Pma+P_a_be*Pj_a*Pm_a)+(P_e*(Pa_b_e*Pja*Pma+P_a_b_e*Pj_a*Pm_a)));
 
+
 % Normalisation
 Pbjm = 1/(X1+X2)*X1;
 P_bjm = 1/(X1+X2)*X2;
 
-
 N = 10000;
-for i=1:N
-    event = [];
-    sampledValueB = sampleVariable(varB, 'b');
-    event = [event, sampledValueB];
 
-    sampledValueE = sampleVariable(varE, 'e');
-    event = [event, sampledValueE];
+function P = rejectionSampling(X,e,N)
+    x = 0;
+    for i=1:N
+        event = [];
+        sampledValueB = priorSample(varB, 'b');
+        event = [event, sampledValueB];
 
-    conditionalA = strcat('a|',sampledValueB,sampledValueE);
-    sampledValueA = sampleVariable(varA, conditionalA);
-    sampledValueA_split = extractBefore(sampledValueA,'|');
-    event = [event, sampledValueA_split];
+        sampledValueE = priorSample(varE, 'e');
+        event = [event, sampledValueE];
 
-    conditionalJ = strcat('j|',sampledValueA_split);
-    sampledValueJ = sampleVariable(varJ, conditionalJ);
-    sampledValueJ_split = extractBefore(sampledValueJ,'|');
-    event = [event, sampledValueJ_split];
+        conditionalA = strcat('a|',sampledValueB,sampledValueE);
+        sampledValueA = priorSample(varA, conditionalA);
+        sampledValueA_Q = extractBefore(sampledValueA,'|');
+        sampledValueA_e = extractAfter(sampledValueA,'|');        
+        event = [event, sampledValueA_Q];
 
-    conditionalM = strcat('m|',sampledValueA_split);
-    sampledValueM = sampleVariable(varM, conditionalM);
-    sampledValueM_split = extractBefore(sampledValueM,'|');
-    event = [event,sampledValueM_split];
-    disp(event);
+        conditionalJ = strcat('j|',sampledValueA_Q);
+        sampledValueJ = priorSample(varJ, conditionalJ);
+        sampledValueJ_Q = extractBefore(sampledValueJ,'|');
+        sampledValueJ_e = extractAfter(sampledValueJ,'|');
+        event = [event, sampledValueJ_Q];
+    
+        conditionalM = strcat('m|',sampledValueA_Q);
+        sampledValueM = priorSample(varM, conditionalM);
+        sampledValueM_Q = extractBefore(sampledValueM,'|');
+        sampledValueM_e = extractAfter(sampledValueM,'|');
+        event = [event,sampledValueM_Q];
+        
+        if sampledValueA_Q == e
+            x = x + 1;
+        end
+        
+        disp(event);
+    end
 end
 
-function sampledValue = sampleVariable(vari, value)
-    sampledValue = '';
-    randnum = rand();
-    value1 = '';
-    value2 = '';
-   % for i=1:size(vari,1)
-        
-        value1 = vari(strcat('+',value)); %here
-        value2 = vari(strcat('-',value));
+function sampledVariable = priorSample(var, value)
+    randnum = rand();       
+    value1 = var(strcat('+',value)); 
+    value2 = var(strcat('-',value));
     if randnum<value1
-        sampledValue = strcat('+',value);
+        sampledVariable = strcat('+',value);
     else
-        sampledValue = strcat('-',value);
+        sampledVariable = strcat('-',value);
     end
-    %end
 end
 
 % Parameter Learning Functions: Maximum Likelihood Estimation (MLE)

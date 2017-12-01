@@ -1,35 +1,50 @@
 % Task 1a Script | Advanced Artificial Intelligence | CMP9132M
 % 12421031 | Peter Hart
 
-%Clear workspace variables
-clear;
+%Clear workspace variables and command window.
+clear;clc;
 
-% Gather user input for the following three probabilities
+% Variables involved in this solution can be defined as:
+% d = the person has the disease.
+% t = the test is positive. 
+
+% The solution gathers user input for the following three variables:
+
 % P(d) 
 prompt = 'What is P(d)? ';
-pd = input(prompt);
+Pd = input(prompt);
 
 % P(t|d) 
 prompt = 'What is P(t|d)? ';
-ptd = input(prompt);
+Ptd = input(prompt);
 
 % P(¬t|¬d)
 prompt = 'What is P(¬t|¬d)? ';
-p_t_d = input(prompt);
+P_t_d = input(prompt);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Bayes Rule = P(A|B) = P(B|A)P(A)/P(B)
+%Bayes Rule = P(A|B) = P(B|A)*P(A)/P(B)
+%             P(d|t) = P(t|d)*P(d)/P(t)
 
 %P(¬d)
-p_d = 1 - pd;
+P_d = 1 - Pd;
 
 %P(¬t|d)
-p_td = 1 - p_t_d;
+P_td = 1 - P_t_d;
 
 %P(t)
-pt = (ptd*pd)+(p_td*p_d);
+Pt = (Ptd*Pd)+(P_td*P_d);
 
 %P(d|t)
-pdt = (ptd*pd) / pt;
+Pdt = (Ptd*Pd) / Pt;
+
+% Output the Results:
+disp('P(d|t) = (P(t|d)*P(d))/P(t)');
+UI = ['P(d|t) = (',num2str(Ptd), ' * ', num2str(Pd),') / ', num2str(Pt)]; 
+disp(UI);
+UI = ['P(d|t) = ',num2str(Pdt)];
+disp(UI);
 
 %end of script
