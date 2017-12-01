@@ -31,11 +31,35 @@ P_t_d = input(prompt);
 %P(查)
 P_d = 1 - Pd;
 
+% Output the Results:
+disp('P(查) = 1 - P(d)');
+UI = ['P(查) = 1 - ', num2str(Pd)];
+disp(UI);
+UI = ['P(查) = ', num2str(P_d)];
+disp(UI);
+
 %P(氟|d)
 P_td = 1 - P_t_d;
 
+% Output the Results:
+disp('P(氟|d) = 1 - P(氟|查)');
+UI = ['P(氟|d) = 1 - ', num2str(P_t_d)];
+disp(UI);
+UI = ['P(氟|d) = ', num2str(P_td)];
+disp(UI);
+
 %P(t)
 Pt = (Ptd*Pd)+(P_td*P_d);
+
+% Output the Results:
+disp('P(t) = (P(t|d) * P(d)) + (P(氟|d) * P(查))');
+UI = ['P(t) = (', num2str(Ptd), ' * ', num2str(Pd), ') + (', num2str(P_td), ' * ', num2str(P_d), ')'];
+disp(UI);
+UI = ['P(t) = ', num2str(Ptd*Pd), ' + ', num2str(P_td*P_d)];
+disp(UI);
+UI = ['P(t) = ', num2str(Pt)];
+disp(UI);
+
 
 %P(d|t)
 Pdt = (Ptd*Pd) / Pt;
