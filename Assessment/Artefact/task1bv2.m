@@ -75,14 +75,12 @@ X1 = Pb*(Pe*(Pabe*Pja*Pma+P_abe*Pj_a*Pm_a)+(P_e*(Pab_e*Pja*Pma+P_ab_e*Pj_a*Pm_a)
 X2 = P_b*(Pe*(Pa_be*Pja*Pma+P_a_be*Pj_a*Pm_a)+(P_e*(Pa_b_e*Pja*Pma+P_a_b_e*Pj_a*Pm_a)));
 
 
-% Normalisation
-Pbjm = 1/(X1+X2)*X1;
-P_bjm = 1/(X1+X2)*X2;
 
-N = 10000;
+N = 42000;
 
-function P = rejectionSampling(X,e,N)
-    x = 0;
+%function P = rejectionSampling(X,e,N)
+    n1 = 0;
+    n2 = 0;
     for i=1:N
         event = [];
         sampledValueB = priorSample(varB, 'b');
@@ -94,26 +92,53 @@ function P = rejectionSampling(X,e,N)
         conditionalA = strcat('a|',sampledValueB,sampledValueE);
         sampledValueA = priorSample(varA, conditionalA);
         sampledValueA_Q = extractBefore(sampledValueA,'|');
-        sampledValueA_e = extractAfter(sampledValueA,'|');        
         event = [event, sampledValueA_Q];
 
         conditionalJ = strcat('j|',sampledValueA_Q);
         sampledValueJ = priorSample(varJ, conditionalJ);
         sampledValueJ_Q = extractBefore(sampledValueJ,'|');
-        sampledValueJ_e = extractAfter(sampledValueJ,'|');
         event = [event, sampledValueJ_Q];
     
         conditionalM = strcat('m|',sampledValueA_Q);
         sampledValueM = priorSample(varM, conditionalM);
         sampledValueM_Q = extractBefore(sampledValueM,'|');
-        sampledValueM_e = extractAfter(sampledValueM,'|');
         event = [event,sampledValueM_Q];
         
-        if sampledValueA_Q == e
-            x = x + 1;
+        %P(b|j,m)
+        %P(+b)
+        x1 = compareReject('+b',sampledValueB);
+        if x1 > 0
+           x2 = compareReject('+j', sampledValueJ_Q);
+           x3 = compareReject('+m', sampledValueM_Q);
+           if x2 > 0 && x3 > 0
+               n1 = n1 + 1;
+           end
+        end
+        
+        %P(¬b)
+        y1 = compareReject('-b',sampledValueB);
+        if y1 > 0
+           y2 = compareReject('+j', sampledValueJ_Q);
+           y3 = compareReject('+m', sampledValueM_Q);
+           if y2 > 0 && y3 > 0
+               n2 = n2 + 1;
+           end
         end
         
         disp(event);
+    end
+    % Normalisation
+Pbjm = 1/(n1+n2)*n1;
+P_bjm = 1/(n1+n2)*n2;
+
+%end
+
+function x = compareReject(var,sample)
+    x = 0;
+    if var == sample
+        x = x + 1;
+    else
+        x = 0;
     end
 end
 
