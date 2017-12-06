@@ -39,23 +39,23 @@ UI = ['P(查) = ', num2str(P_d)];
 disp(UI);
 
 %P(氟|d)
-P_td = 1 - P_t_d;
+Pt_d = 1 - P_t_d;
 
 % Output the Results:
-disp('P(氟|d) = 1 - P(氟|查)');
-UI = ['P(氟|d) = 1 - ', num2str(P_t_d)];
+disp('P(t|查) = 1 - P(氟|查)');
+UI = ['P(t|查) = 1 - ', num2str(P_t_d)];
 disp(UI);
-UI = ['P(氟|d) = ', num2str(P_td)];
+UI = ['P(t|查) = ', num2str(Pt_d)];
 disp(UI);
 
 %P(t)
-Pt = (Ptd*Pd)+(P_td*P_d);
+Pt = (Ptd*Pd)+(Pt_d*P_d);
 
 % Output the Results:
-disp('P(t) = (P(t|d) * P(d)) + (P(氟|d) * P(查))');
-UI = ['P(t) = (', num2str(Ptd), ' * ', num2str(Pd), ') + (', num2str(P_td), ' * ', num2str(P_d), ')'];
+disp('P(t) = (P(t|d) * P(d)) + (P(t|查) * P(查))');
+UI = ['P(t) = (', num2str(Ptd), ' * ', num2str(Pd), ') + (', num2str(Pt_d), ' * ', num2str(P_d), ')'];
 disp(UI);
-UI = ['P(t) = ', num2str(Ptd*Pd), ' + ', num2str(P_td*P_d)];
+UI = ['P(t) = ', num2str(Ptd*Pd), ' + ', num2str(Pt_d*P_d)];
 disp(UI);
 UI = ['P(t) = ', num2str(Pt)];
 disp(UI);
