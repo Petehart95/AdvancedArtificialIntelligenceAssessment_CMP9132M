@@ -9,7 +9,6 @@ clear;clc;
 % t = the test is positive. 
 
 % The solution gathers user input for the following three variables:
-
 % P(d) 
 prompt = 'What is P(d)? ';
 Pd = input(prompt);
@@ -23,8 +22,6 @@ prompt = 'What is P(¬t|¬d)? ';
 P_t_d = input(prompt);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %Bayes Rule = P(A|B) = P(B|A)*P(A)/P(B)
 %             P(d|t) = P(t|d)*P(d)/P(t)
 
@@ -59,7 +56,6 @@ UI = ['P(t) = ', num2str(Ptd*Pd), ' + ', num2str(Pt_d*P_d)];
 disp(UI);
 UI = ['P(t) = ', num2str(Pt)];
 disp(UI);
-
 
 %P(d|t)
 Pdt = (Ptd*Pd) / Pt;
