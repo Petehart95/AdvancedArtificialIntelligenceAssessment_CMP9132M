@@ -45,7 +45,6 @@ while (UIcontinue == 1)
     %Store user input in variable i. Convert string to lowercase.
     i = lower(input(prompt,'s'));
     
-
     % Compute current state probabilities depending on which emission
     % probability is selected by the user.
     % st = Ot * T' * st-1
